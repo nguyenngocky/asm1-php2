@@ -57,11 +57,12 @@ class AnswerController
     {
         $models = new Answer();
         $data = [
-            'content' => $_POST['content'],
+            'content' => $_POST['answer'],
             'question_id' => $_POST['question_id'],
+            'is_correct' => $_POST['is_correct']
         ];
         $models->insert($data);
-        header('location: ' . BASE_URL . 'dashboard/answer');
+        header('location: ' . $_SERVER['HTTP_REFERER']);
         die;
     }
 

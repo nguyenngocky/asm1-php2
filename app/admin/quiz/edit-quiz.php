@@ -6,7 +6,7 @@
                 <h3 class="card-title">Sửa Quiz</h3>
             </div>
             <div class="card-body">
-                <form action="<?= BASE_URL . 'quiz/luu-cap-nhat?subjectId=' . $subjectId ?>" method="post">
+                <form action="<?= BASE_URL . 'quiz/luu-cap-nhat?subjectId=' . $quiz->id ?>" method="post">
                     <div class="col-6 offset-3">
                         <div class="form-group">
                             <label for="">Tên Quiz</label>
@@ -53,11 +53,51 @@
                         <div class="col-6">
                             <ul class="list-group">
                                 <li class="list-group-item active" aria-current="true">
-                                    Câu hỏi số: <?= $index + 1 ?>: <?= $qu->name ?>
+                                    Câu hỏi số: <?= $index + 1 ?>: <?= $qu->name ?> <button type="button" id="openAddAnswersModal<?=$index + 1?>" class="btn btn-success">Thêm đáp án</button>
                                 </li>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="addAnswersModal<?=$index + 1?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Tạo câu trả lời</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="<?= BASE_URL .'save-dap-an'?>" method="post">
+                                                    <h3>Đáp án <button disabled type="button" id="add_answer" class="btn btn-sm btn-success">Thêm đáp án</button></h3>
+                                                            <table>
+                                                                <thead>
+                                                                    <th style="width: 80%;">Nội dung</th>
+                                                                    <th>Đáp án đúng</th>
+                                                                    <input hidden type="text" name="question_id" value="<?= $qu->id ?>"> câu hỏi : <?=$qu->name?>
+                                                                </thead>
+                                                                <tbody id="answer_list">
+                                                                    <tr>
+                                                                        <td style="width: 80%;">
+                                                                            <input type="text" class="form-control" name="answer">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input class="form-check-input" onchange="correctAnswerChange(this)" name="is_correct" type="checkbox" value="1" id="status">
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <input type="hidden" value="" id="correct_order">
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                            <input type="submit" class="btn btn-primary" value="Lưu">
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                 <?php foreach ($qu->getAnswers() as $ansIndex => $ans) : ?>
                                     <li class="list-group-item">
-                                        Đáp án <?= $ansIndex + 1 ?>: <strong><?= $ans->content ?></strong>
+                                        Đáp án <?= $ansIndex + 1 ?>: <strong><?= $ans->content ?></strong> <?php if($ans->is_correct == 1) echo "đúng"?>
                                     </li>
                                     
                                 <?php endforeach ?>
@@ -86,6 +126,7 @@
                             <div class="form-group">
                                 <label for="">Nội dung câu hỏi?</label>
                                 <textarea name="name" class="form-control" rows="4"></textarea>
+                                <input type="text" hidden value="<?=$quiz->id?>" name="quiz_id">
                                 
                             </div>
                         </div>
@@ -132,6 +173,15 @@
     $("#openAddQuestionModal").click(function() {
         addQuestionModel.show();
     })
+
+    <?php foreach ($questions as $index => $qu) : ?>
+
+        var addAnswersModal<?=$index + 1?> = new bootstrap.Modal(document.getElementById('addAnswersModal<?=$index + 1?>'), options)
+        $("#openAddAnswersModal<?=$index + 1?>").click(function(){
+            addAnswersModal<?=$index + 1?>.show();
+        })
+
+        <?php endforeach ?>
 
     $('#add_answer').click(function() {
 

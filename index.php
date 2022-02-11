@@ -186,6 +186,11 @@ switch ($url) {
         $ctr = new QuestionController();
         $ctr->remove();
         break;
+
+    case 'save-dap-an':
+        $ctr = new AnswerController();
+        $ctr->saveAnswer();
+        break;
     case 'quiz/lam-bai':
         break;
 

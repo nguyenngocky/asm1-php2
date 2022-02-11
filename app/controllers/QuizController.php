@@ -73,19 +73,19 @@ class QuizController
 
     public function saveEditQuiz()
     {
-        $id = $_GET['id'];
-        $model = Quiz::where(['id', '=', $id])->first();
-        if (!$model) {
-            header('location: ' . BASE_URL . 'dashboard/quiz');
-            die;
-        }
-
+        $subjectId = $_GET['id'];
         $data = [
             'name' => $_POST['name'],
-            'subject_id' => $_POST['subject_id']
+            'start_time' => $_POST['start_time'],
+            'end_time' => $_POST['end_time'],
+            'duration_minutes' => $_POST['duration_minutes'],
+            'status' => isset($_POST['status']) ? 1 : 0,
+            'is_shuffle' => isset($_POST['is_shuffle']) ? 1 : 0,
+            'subject_id' => $subjectId
         ];
-        $model->update($data);
-        header('location: ' . BASE_URL . 'dashboard/quiz');
+        $model = new Quiz();
+        $quiz = $model->insert($data);
+        header('location: ' . BASE_URL . 'quiz/cap-nhat?id=' . $quiz->id);
         die;
     }
 
